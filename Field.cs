@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleRPG.Classes;
+using ConsoleRPG.Classes.Characters;
 
 namespace ConsoleRPG
 {
@@ -11,6 +12,7 @@ namespace ConsoleRPG
     {
         public static void DrawField(CharacterClass player, List<Enemy> enemies)
         {
+            //The Field represented as a 10x10 matrix
             char[,] field = new char[10, 10];
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($"Health: {player.Health}    Mana: {player.Mana}");
@@ -22,12 +24,12 @@ namespace ConsoleRPG
                     field[i, j] = '▒';
                 }
             }
-
+            //Positioning of the player
             if (player.X >= 0 && player.X < 10 && player.Y >= 0 && player.Y < 10)
             {
                 field[player.X, player.Y] = player.CharacterRepresentation;
             }
-
+            //Positioning of the enemy
             foreach (var enemy in enemies)
             {
                 if (enemy.X >= 0 && enemy.X < 10 && enemy.Y >= 0 && enemy.Y < 10)
@@ -44,7 +46,7 @@ namespace ConsoleRPG
                 }
                 Console.WriteLine();
             }
-
+            //Checks for the enemies in range
             Console.WriteLine("Enemies in range:");
             foreach (var enemy in enemies)
             {
@@ -56,7 +58,7 @@ namespace ConsoleRPG
 
             if (!enemies.Exists(e => Math.Abs(e.X - player.X) <= player.Range && Math.Abs(e.Y - player.Y) <= player.Range))
             {
-                Console.WriteLine("No enemies in range.");
+                Console.WriteLine("No available targets in your range");
             }
         }
     }

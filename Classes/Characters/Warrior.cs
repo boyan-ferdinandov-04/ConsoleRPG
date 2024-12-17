@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleRPG.Classes
+namespace ConsoleRPG.Classes.Characters
 {
-    public class Warrior:CharacterClass
+    public class Warrior : CharacterClass
     {
         public Warrior()
         {

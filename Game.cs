@@ -1,4 +1,5 @@
 ﻿using ConsoleRPG.Classes;
+using ConsoleRPG.Classes.Characters;
 using ConsoleRPG.Data;
 using ConsoleRPG.Data.Models;
 using ConsoleRPG.Enums;
@@ -8,12 +9,15 @@ namespace ConsoleRPG
 {
     public class Game
     {
+        //An enum that checks for the screen state
         private ScreenEnum currentState;
+        //A variable that keeps track of the player
         private CharacterClass playerCharacter;
         private List<Enemy> enemies;
         private Random random;
+        //During every game session we keep track of the kill counts
         private int monsterKillCount;
-
+        
         public Game()
         {
             currentState = ScreenEnum.MainMenu;
@@ -22,6 +26,7 @@ namespace ConsoleRPG
             monsterKillCount = 0;
         }
 
+        //The launcher method
         public void Run()
         {
             while (currentState != ScreenEnum.Exit)
@@ -33,18 +38,19 @@ namespace ConsoleRPG
                         break;
                     case ScreenEnum.CharacterSelect:
                         playerCharacter = SelectCharacter();
-                        AllocateStats(playerCharacter); 
-                        SaveCharacterInfo(playerCharacter); 
+                        AllocateStats(playerCharacter);
+                        SaveCharacterInfo(playerCharacter);
                         currentState = ScreenEnum.InGame;
                         break;
                     case ScreenEnum.InGame:
                         HandleGameLoop();
                         break;
-                    case ScreenEnum.Exit:
-                        Environment.Exit(0);
-                        break;
+                    
                 }
             }
+            //When we exit the game we save the session
+            SaveSession();
+            Environment.Exit(0);
         }
 
         private ScreenEnum ShowMainMenu()
@@ -63,29 +69,25 @@ namespace ConsoleRPG
             while (!isConfirmed)
             {
                 Console.Clear();
-                Console.WriteLine("Choose character type:\n1) Warrior\n2) Archer\n3) Mage\n4) Display Logs\nYour pick: ");
+                Console.WriteLine("Choose character type or view logs of previous games:\nOptions:\n1) Warrior\n2) Archer\n3) Mage\n4) Display Logs\nYour pick: ");
 
                 ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.D1:
-                    case ConsoleKey.NumPad1:
                         character = new Warrior();
                         Console.WriteLine("\nYou chose Warrior!");
                         break;
                     case ConsoleKey.D2:
-                    case ConsoleKey.NumPad2:
                         character = new Archer();
                         Console.WriteLine("\nYou chose Archer!");
                         break;
                     case ConsoleKey.D3:
-                    case ConsoleKey.NumPad3:
                         character = new Mage();
                         Console.WriteLine("\nYou chose Mage!");
                         break;
                     case ConsoleKey.D4:
-                    case ConsoleKey.NumPad4:
                         DisplayLogs();
                         Console.WriteLine("Press anything to continue");
                         Console.ReadKey(true);
@@ -94,7 +96,8 @@ namespace ConsoleRPG
                         Console.WriteLine("Invalid choice. Returning to the selection");
                         continue;
                 }
-
+                //We make sure that the player has selected the characters they want to play as
+                //and haven't accidentally selected something else
                 Console.WriteLine($"\nYou selected: {character.GetType().Name}.\nIs this correct? (Y/N)");
                 ConsoleKeyInfo confirmation = Console.ReadKey(true);
 
@@ -134,17 +137,17 @@ namespace ConsoleRPG
                     int addStrength = ReadStatInput(remainingPoints);
 
                     remainingPoints -= addStrength;
-
+                    Console.WriteLine($"Remaining Points: {remainingPoints}");
                     Console.Write("Add to Agility: ");
                     int addAgility = ReadStatInput(remainingPoints);
 
                     remainingPoints -= addAgility;
-
+                    Console.WriteLine($"Remaining Points: {remainingPoints}");
                     Console.Write("Add to Intelligence: ");
                     int addIntelligence = ReadStatInput(remainingPoints);
 
                     remainingPoints -= addIntelligence;
-
+                    Console.WriteLine($"Remaining Points: {remainingPoints}");
                     playerCharacter.Strength += addStrength;
                     playerCharacter.Agility += addAgility;
                     playerCharacter.Intelligence += addIntelligence;
@@ -155,7 +158,8 @@ namespace ConsoleRPG
                 Console.ReadKey(true);
             }
         }
-
+        //THe method that handles the main game loop:
+        //Movement, enemies, etc.
         private void HandleGameLoop()
         {
             Console.Clear();
@@ -178,15 +182,16 @@ namespace ConsoleRPG
             }
 
             UpdateEnemies(playerCharacter, enemies);
-
+            //If the player dies we go to the exit screen
             if (playerCharacter.Health <= 0)
             {
                 Console.WriteLine("You have been defeated.");
                 currentState = ScreenEnum.Exit;
-                SaveSession();
+                
             }
         }
-
+        // A method that handles movement in a matrix
+        //The math class is used to make sure that the player doesn't go out of bounds
         private void HandleMovement(CharacterClass playerCharacter)
         {
             Console.WriteLine("Use WASD to move or diagonals with QEZX:");
@@ -194,10 +199,18 @@ namespace ConsoleRPG
 
             switch (keyInfo.Key)
             {
-                case ConsoleKey.W: playerCharacter.X = Math.Max(0, playerCharacter.X - 1); break;
-                case ConsoleKey.S: playerCharacter.X = Math.Min(9, playerCharacter.X + 1); break;
-                case ConsoleKey.A: playerCharacter.Y = Math.Max(0, playerCharacter.Y - 1); break;
-                case ConsoleKey.D: playerCharacter.Y = Math.Min(9, playerCharacter.Y + 1); break;
+                case ConsoleKey.W: 
+                    playerCharacter.X = Math.Max(0, playerCharacter.X - 1);
+                    break;
+                case ConsoleKey.S: 
+                    playerCharacter.X = Math.Min(9, playerCharacter.X + 1); 
+                    break;
+                case 
+                    ConsoleKey.A: playerCharacter.Y = Math.Max(0, playerCharacter.Y - 1); 
+                    break;
+                case 
+                    ConsoleKey.D: playerCharacter.Y = Math.Min(9, playerCharacter.Y + 1); 
+                    break;
                 case ConsoleKey.Q:
                     playerCharacter.X = Math.Max(0, playerCharacter.X - 1);
                     playerCharacter.Y = Math.Max(0, playerCharacter.Y - 1);
@@ -219,7 +232,7 @@ namespace ConsoleRPG
                     break;
             }
         }
-
+        //A method that eases the input of numbers that have to be in a specific range
         private int ReadStatInput(int maxPoints)
         {
             int value;
@@ -234,6 +247,7 @@ namespace ConsoleRPG
             }
         }
 
+        //We spawn enemies as long as the position is valid
         private void SpawnEnemy(Random random, List<Enemy> enemies, CharacterClass player)
         {
             int x, y;
@@ -246,9 +260,14 @@ namespace ConsoleRPG
 
             } while (!isPositionValid);
 
-            enemies.Add(new Enemy { X = x, Y = y });
+            enemies.Add(new Enemy
+            {
+                X = x, 
+                Y = y
+            });
         }
 
+        //This method handles attacks and checks whether we can attack an enemy given the range 
         private void HandleAttack(CharacterClass player, List<Enemy> enemies)
         {
             var targetsInRange = enemies.Where(e => Math.Abs(e.X - player.X) <= player.Range && Math.Abs(e.Y - player.Y) <= player.Range).ToList();
@@ -279,7 +298,7 @@ namespace ConsoleRPG
                 monsterKillCount++;
             }
         }
-
+        //We move the player closer to the player
         private void UpdateEnemies(CharacterClass player, List<Enemy> enemies)
         {
             foreach (var enemy in enemies)
@@ -292,19 +311,28 @@ namespace ConsoleRPG
                 }
                 else
                 {
-                    if (enemy.X < player.X) 
+                    if (enemy.X < player.X)
+                    {
                         enemy.X++;
-                    else if (enemy.X > player.X) 
+                    }
+                        
+                    else if (enemy.X > player.X)
+                    {
                         enemy.X--;
+                    }
 
-                    if (enemy.Y < player.Y) 
+                    if (enemy.Y < player.Y)
+                    {
                         enemy.Y++;
-                    else if (enemy.Y > player.Y) 
+                    }
+                    else if (enemy.Y > player.Y)
+                    {
                         enemy.Y--;
+                    }
                 }
             }
         }
-
+        //A method that saves the player character in the DB 
         private static void SaveCharacterInfo(CharacterClass playerCharacter)
         {
             using var context = new ConsoleRPGContext();
@@ -320,20 +348,18 @@ namespace ConsoleRPG
             context.SaveChanges();
             
         }
-
+        //An option to display all previous players from the DB before we start the game
         private void DisplayLogs()
         {
-            using (var context = new ConsoleRPGContext())
+            using var context = new ConsoleRPGContext();
+            var logs = context.GameLogs.ToList();
+            Console.WriteLine("Saved Character Logs:");
+            foreach (var log in logs)
             {
-                var logs = context.GameLogs.ToList();
-                Console.WriteLine("Saved Character Logs:");
-                foreach (var log in logs)
-                {
-                    Console.WriteLine($"ID: {log.Id}, Type: {log.CharacterClass}, Strength: {log.Strength}, Agility: {log.Agility}, Intelligence: {log.Intelligence}, Created On: {log.CreationTime}");
-                }
+                Console.WriteLine($"ID: {log.Id}, Type: {log.CharacterClass}, Strength: {log.Strength}, Agility: {log.Agility}, Intelligence: {log.Intelligence}, Created On: {log.CreationTime}");
             }
         }
-
+        //This saves the current session and references the character created in the DB
         private void SaveSession()
         {
             using var context = new ConsoleRPGContext();

@@ -4,22 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleRPG.Classes
+namespace ConsoleRPG.Classes.Characters
 {
-    public class Archer:CharacterClass
+    public class Mage : CharacterClass
     {
-        public Archer()
+        public Mage()
         {
             Strength = 2;
             Agility = 1;
             Intelligence = 3;
             Range = 3;
-            CharacterRepresentation = '#';
 
             X = 1;
             Y = 1;
+
+            CharacterRepresentation = '*';
             Setup();
         }
-
     }
 }

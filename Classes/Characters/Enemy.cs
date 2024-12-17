@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleRPG.Classes
+namespace ConsoleRPG.Classes.Characters
 {
-    public class Enemy:CharacterClass
+    public class Enemy : CharacterClass
     {
         private static readonly Random Random = new();
         public Enemy()
@@ -24,6 +24,6 @@ namespace ConsoleRPG.Classes
         {
             return Random.Next(1, 4);
         }
-        
+
     }
 }

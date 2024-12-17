@@ -150,3 +150,4 @@ C:\Users\BoyanFerdinandov\source\repos\ConsoleRPG\ConsoleRPG\bin\Debug\net8.0\ru
 C:\Users\BoyanFerdinandov\source\repos\ConsoleRPG\ConsoleRPG\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\BoyanFerdinandov\source\repos\ConsoleRPG\ConsoleRPG\obj\Debug\net8.0\ConsoleRPG.csproj.AssemblyReference.cache
 C:\Users\BoyanFerdinandov\source\repos\ConsoleRPG\ConsoleRPG\obj\Debug\net8.0\ConsoleRPG.csproj.Up2Date
+C:\Users\BoyanFerdinandov\source\repos\ConsoleRPG\ConsoleRPG\obj\Debug\net8.0\ConsoleRPG.sourcelink.json
